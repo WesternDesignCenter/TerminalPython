@@ -33,7 +33,7 @@ print("Welcome to WDC's 65xx Serial Monitor in Python")
 print("Press the reset button on your board to start reading serial data from the board")
 ## For now the Serial Port Needs to be set manually.  Change the line below to
 ## your COMXX port
-ser = serial.Serial("/dev/tty.usbserial-A703XC1I", 9600, timeout=1)
+ser = serial.Serial("COM79", 9600, timeout=1)
 ser.flushInput()
 ser.flushOutput()
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
@@ -49,7 +49,7 @@ while readser == 1:
             hello = hello.replace("1995", "1995-2014")	##Just an example of replacing text.  Not needed.
             print(hello.rstrip())
         # The W65C134SXB uses '.' for it's Monitor ROM prompt
-        elif (hello.strip() == '>' | hello.strip() == '.'): 
+        elif (hello.strip() == '>' or hello.strip() == '.'): 
             readser = 0
             print("Enter a command.  For a list of commands press h")
             print(hello.rstrip())
