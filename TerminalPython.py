@@ -2,16 +2,32 @@
 ##You can use this as a start to customize the interface for your needs.  
 ##NOTE:  Change Line 14 to have the proper COM port or it will not work!
 ##import serial lib
-import msvcrt
+##import msvcrt
 import serial
 import io
 import time
+
+try: 
+	from msvcrt import getch 
+except ImportError: 
+	''' we're not on Windows, so we try the Unix-like approach '''
+
+	def getch( ): 
+		import sys, tty, termios 
+		fd = sys.stdin.fileno( ) 
+		old_settings = termios.tcgetattr(fd) 
+		try: 
+			tty.setraw(fd) 
+			ch = sys.stdin.read(1) 
+		finally: 
+			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings) 
+			return ch
 
 ##open serial port
 print ("Welcome to WDC's 65xx Serial Monitor in Python");
 print ("Press the reset button on your board to start reading serial data from the board");
 ## For now the Serial Port Needs to be set manually.  Change the line below to your COMXX port
-ser = serial.Serial("COM74", 9600,timeout=1)
+ser = serial.Serial("/dev/tty.usbserial-A703XC1I", 9600,timeout=1)
 ser.flushInput()
 ser.flushOutput()
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
@@ -30,7 +46,7 @@ while readser == 1:
 			readser = 0
 			print ("Enter a command.  For a list of commands press h");
 			print hello;
-			writedata = msvcrt.getch()
+			writedata = getch()
 			ser.write(writedata)
 			readser = 1
 		elif "BB:AAAA" in hello: 
